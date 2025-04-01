@@ -1,22 +1,26 @@
-def get_num(message):
-    print(message)
-    
-    num=-1
+import sys
 
-    while(num==-1):
-        
-        num = input()
-        
-        if(num.isdecimal() == False ):
-            
-            print("!Ошибка, введите  положительное, целое число")
-            num=-1
-        else:
-            if (int(num) == 0):
-                print("!Слишком маленькое число, введите еще раз")
-                num=-1
+def numbers_verification(numbers): #минимальна§ проверка
+    
+    result = True
+
+    if len(numbers) == 2:
+     
+        for n in numbers:
+            if n.isdecimal() == False:
+                print("!Ошибка ввода числа")
+                result = False
             else:
-                return int(num)
+                
+                if int(n)<1:
+                    print("0 не подходит")
+                    result = False
+
+    else:
+        result = False
+        print("Ошибка, передано не 2 значения")
+        
+    return result
 
 def calculate(n, m):
     
@@ -25,8 +29,8 @@ def calculate(n, m):
     for i in range(1, n+1):
         array.append(i)
     
-    print("Массив для n = "+str(n)+" \n" + str(array) + "...")
-    print("Длина интервала m = "+str(m)+"\n")
+    #print("Массив для n = "+str(n)+" \n" + str(array) + "...")
+    #print("Длина интервала m = "+str(m)+"\n")
 
     pos_start = 0
     pos_end = (m-1)
@@ -35,7 +39,7 @@ def calculate(n, m):
 
     while (array[pos_end%n] != array[0]):
     
-        print("Интервал:\nИндекc:   "+str(pos_start) +"..." +str(pos_end) +"\nЗначения: ["+ str(array[pos_start%n]) +"]..." +str(array[pos_end%n] )+"\n")
+        #print("Интервал:\nИндекc:   "+str(pos_start) +"..." +str(pos_end) +"\nЗначения: ["+ str(array[pos_start%n]) +"]..." +str(array[pos_end%n] )+"\n")
 
         pos_start = pos_end
         pos_end   = pos_start + (m-1)
@@ -43,12 +47,11 @@ def calculate(n, m):
         path +=str(array[pos_start%n])
     
 
-    print("Интервал:\nИндекc:   "+str(pos_start) +"..." +str(pos_end) +"\nЗначения: ["+ str(array[pos_start%n]) +"]..." +str(array[pos_end%n] )+"\n")
+    #print("Интервал:\nИндекc:   "+str(pos_start) +"..." +str(pos_end) +"\nЗначения: ["+ str(array[pos_start%n]) +"]..." +str(array[pos_end%n] )+"\n")
     print("Полученный путь: "+str(path))
 
 
-n = get_num(">>>Задайте длину массива:")
-m = get_num(">>>Задайте длину интервала:")
+numbers = sys.argv[1:]
 
-calculate(n, m)
-
+if numbers_verification(numbers):
+    calculate(int(numbers[0]), int(numbers[1]))
