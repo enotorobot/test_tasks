@@ -3,7 +3,7 @@ import os
 import re
 
 
-class Data_type(Enum):
+class Data_type(Enum):  
     circle = 0
     points = 1
 
