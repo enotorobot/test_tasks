@@ -1,28 +1,22 @@
 import json
+import sys
 import os
 
 data_tests = {}
 
-def get_path(message):
+def path_verification(paths): #минимальна§ проверка
     
-    file_received = False
+    result = True
 
-    while(file_received == False):
-        
-        print(message)
-        
-        path = input()
+    if len(paths) == 3:
 
-        file_received = path_verification(path)
-
-    return path
-
-def path_verification(path): #минимальна¤ проверка
-    
-    result = os.path.isfile(path)
-
-    if(result == False):
-       print("Ошибка ввода файла, попробуйьте еще раз")
+        for i in range(2):
+            if os.path.isfile(paths[i]) == False:
+                result = False
+                print("Ошибка файл:", paths[i]," не существует")
+    else:
+        print("Ошибка в количестве переданных имён файлов")
+        result = False
 
     return result
 
@@ -44,7 +38,7 @@ def report_generation(path_values, path_tests , path_report):
 
     with open(path_report, 'w') as file:
         json.dump(data_tests, file, indent = 4, sort_keys = True)
-    print("Отчет создан")
+    #print("Отчет создан")
     
 def data_replace_info(data, replace_id_element, replace_val_key, val):
     
@@ -67,14 +61,9 @@ def nested_search_id(element, replace_id_element, replace_val_key, val):
                 sub_element[replace_val_key] = val
             else:
                 nested_search_id(sub_element, replace_id_element, replace_val_key, val)
+                
+                
+paths = sys.argv[1:]
 
-
-
-path_values = get_path(">>> Введите путь к values.json")
-path_tests  = get_path(">>> Введите путь к tests.json")
-path_report = get_path(">>> Введите путь к report.json")
-
-
-report_generation(path_values, path_tests , path_report)
-
-
+if path_verification(paths):
+    report_generation(paths[0], paths[1], paths[2])
