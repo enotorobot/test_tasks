@@ -1,6 +1,6 @@
 import sys
 
-def numbers_verification(numbers): #минимальна§ проверка
+def numbers_verification(numbers): #минимальная проверка
     
     result = True
 
