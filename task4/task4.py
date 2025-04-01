@@ -1,39 +1,32 @@
+import sys
 import os
 import re
-
-def get_path(message):
-    
-    file_path = "";
-    data_received = False
-    
-    print(message)
-
-    while (os.path.exists(file_path) == False or data_received == False):
-
-        file_path = input()
-    
-        if os.path.exists(file_path):            
-
-            if data_verification(file_path):
-                print("!Успешно: файл открыт")
-                data_received = True
-                return file_path
-            else:
-                print("!Файл есть, но в данных ошибка, попробуй другой файл")
-
-        else:
-            print("!Ошибка, файла нет, попробуй ввести еще раз")
 
 
 def data_verification(file):
     
-    with open(file, encoding='utf-8') as f:
-        s = f.read()
-    numbers = re.findall(r"(-?\d+\.?\d*)", s)
+    result = True
 
-    only_int  = check_integers_only_in(numbers)
+    if os.path.exists(file):  
 
-    return only_int and len(numbers)>1
+        with open(file, encoding='utf-8') as f:
+            s = f.read()
+        numbers = re.findall(r"(-?\d+\.?\d*)", s)
+
+        if len(numbers)>1:
+
+            if check_integers_only_in(numbers) == False:
+                print('Должны быть только целые числа и без дробной части')
+                result = False
+        else:
+            print('Должно быть больше 1 числа')
+            result = False
+
+    else:
+        print('Файла не суествует')
+        result = False
+        
+    return result
 
 def check_integers_only_in(numbers):
     result = True
@@ -51,11 +44,10 @@ def calculation_min_count_steps(link_file):
     
     list_steps =[]
     
+
     min_num = int(min(numbers))
     max_num = int(max(numbers))
     
-    #print(min_num, " ",max_num)
-
     for i in range(min_num, max_num+1):
         
         current_steps = 0
@@ -84,17 +76,14 @@ def calculation_min_count_steps(link_file):
         list_steps.append(current_steps)
     '''
 
-    min_value = min(list_steps)
-    
-    print("Набор чисел " + str(numbers) +"\n"+ "Минимальное количество ходов, требуемых для приведения всех элементов к одному числу: " + str(min_value))
+    #print("Набор чисел " + str(numbers) +"\n"+ "Минимальное количество ходов, требуемых для приведения всех элементов к одному числу: " + str(min_value = min(list_steps)))
+    print(min(list_steps))
 
 
 
-
-    
-path_file = get_path(">>> Введи путь на файл с массивом целых числе")
-
-calculation_min_count_steps(path_file)
-
+path_file = sys.argv[1:][0]
+          
+if data_verification(path_file):
+    calculation_min_count_steps(path_file)
 
 
