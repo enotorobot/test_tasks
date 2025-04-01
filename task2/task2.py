@@ -1,35 +1,30 @@
 from enum import Enum
+import sys
 import os
 import re
 
 
-class Data_type(Enum):  
+class Data_type(Enum):
     circle = 0
     points = 1
 
     
-def get_path(message, data_type):
+def path_verification(paths):
     
-    file_path = "";
-    data_received = False
-    
-    print(message)
+    result = True
 
-    while (os.path.exists(file_path) == False or data_received == False):
+    if len(paths) == 2:
 
-        file_path = input()
-    
-        if os.path.exists(file_path):            
+        for path in paths:
+            if os.path.isfile(path) == False:
+                result = False
+                print("Ошибка файл:", path," не существует")
+    else:
+        print("Ошибка в количестве переданных имён файлов")
+        result = False
 
-            if data_verification(file_path,data_type):
-                print("!Успешно: файл открыт")
-                data_received = True
-                return file_path
-            else:
-                print("!Файл есть, но в данных ошибка, попробуй другой файл")
+    return result
 
-        else:
-            print("!Ошибка, файла нет, попробуй ввести еще раз")
 
 def data_verification(file, data_type):
     
@@ -42,33 +37,38 @@ def data_verification(file, data_type):
     if data_type == Data_type.circle:
         
         if len(numbers) == 3:
-            if check_numbers_in_range (pow(10, -38), pow(10, 38), numbers, 2 ):
-                result = True
+            check_numbers_in_range (pow(10, -38), pow(10, 38), numbers, 2 )
+            result = True
+
         
         return result
     
     if data_type == Data_type.points:
         
-        if (len(numbers) % 2 == 0) and len(numbers)>0 and len(numbers)<=100:
-            if check_numbers_in_range (pow(10, -38), pow(10, 38), numbers, len(numbers) ):
-                result = True  
+        if (len(numbers) % 2 == 0) and len(numbers)>0 and len(numbers)<=200:
+            check_numbers_in_range (pow(10, -38), pow(10, 38), numbers, len(numbers) )
+            result = True  
                     
+        if  len(numbers)>200:
+            print("В файле должно быть до 100 точек")
+            
+        if (len(numbers) % 2 != 0):
+            print("Должны быть пары чисел x и y")
         return  result
     
 
 def check_numbers_in_range(a,b, numbers, check_range):
-    
-    result = True
+    #проверка на диапазон, но будем исходить
    
     for i in range(0, check_range):
         
         if  (a<=float(numbers[i])<=b) == False:
             result = False
             print("Координата ", numbers[i] ,"по номеру ", i+1 ," не в диапазоне от ", a ," до ", b)
-    return result
+
 
 def calculation_points_position(file_circle, file_points): 
-    
+
     data_circle = get_circle_from(file_circle)
     
     circle_x      = data_circle[0]
@@ -77,13 +77,10 @@ def calculation_points_position(file_circle, file_points):
 
     data_points = get_points_from(file_points)
 
-    print("Результат вычислений:")
-
     for i in range(0, len(data_points), 2):    
         xy = data_points[i:i+2]
         checking_point(float(circle_x), float(circle_y), float(circle_radius), float(xy[0]), float(xy[1]))
         
-    print("! Конец вычислений ")
 
 
 def get_circle_from(file):
@@ -124,10 +121,9 @@ def checking_point(circle_x,circle_y, radius, point_x, point_y):
 
 
 
-file_circle = get_path(">>> Введите путь к файлу c данными круга: ", Data_type.circle)
-file_points = get_path(">>> Введите путь к файлу c данными точек: ", Data_type.points)
+paths = sys.argv[1:]
 
-calculation_points_position(file_circle, file_points)
-
-
-
+if path_verification(paths):
+    if data_verification(paths[0],Data_type.circle) and data_verification(paths[1],Data_type.points):
+        calculation_points_position(paths[0], paths[1])
+   
